@@ -21,6 +21,11 @@ Maintainer: Miguel Luis and Gregory Cristian
 
 #include "LoRaMac.h"
 #include "Commissioning.h"
+#include "crc32.h"
+#include "ACType.h"
+#include "ACLog.h"
+#include "ACTemplate.h"
+#include "ACTranslator.h"
 
 /*!
  * Defines the application data transmission duty cycle. 5s, value in [ms].
@@ -124,7 +129,7 @@ static uint8_t AppDataSize = LORAWAN_APP_DATA_SIZE;
 /*!
  * User application data buffer size
  */
-#define LORAWAN_APP_DATA_MAX_SIZE                           64
+#define LORAWAN_APP_DATA_MAX_SIZE                           12
 
 /*!
  * User application data
@@ -639,6 +644,10 @@ static void MlmeConfirm( MlmeConfirm_t *mlmeConfirm )
     NextTx = true;
 }
 
+void printFunction(const char *message) {
+	printf(message);
+}
+
 /**
  * Main application entry point.
  */
@@ -650,6 +659,14 @@ int main( void )
     //BoardInitPeriph( );
 
     DeviceState = DEVICE_STATE_INIT;
+
+    ACTemplateInit();
+
+    ACTranslatorCallback translatorCallbacks[kAmountOfMessageTypes];
+    translatorCallbacks[kContent] = ACTemplateUpdateContent;
+
+    ACLogInit(printFunction);
+    ACTranslatorInit(translatorCallbacks);
 
     while( 1 )
     {
@@ -853,28 +870,28 @@ static void LoRaTxData(uint8_t port){
 	            AppData[14] = ( altitudeGps >> 8 ) & 0xFF;
 	            AppData[15] = altitudeGps & 0xFF;
 	#elif defined( USE_BAND_915 ) || defined( USE_BAND_915_HYBRID )
-	            int16_t temperature = 0;
-	            int32_t latitude, longitude = 0;
-	            uint16_t altitudeGps = 0xFFFF;
-	            uint8_t batteryLevel = 0;
+	            uint8_t buffer[MAX_CONTENT_SIZE];
+	            uint8_t bufferSize;
 
-	            //temperature = ( int16_t )( MPL3115ReadTemperature( ) * 100 );       // in °C * 100
+	            uint8_t batteryLevel = BoardGetBatteryLevel( );
+	            ACTemplateGetContent(buffer, &bufferSize);
+	            uint32_t crcTemplate = crc32(buffer, bufferSize, 0xFFFFFFFF);
+	            ACTemplateGetCurrentTemplate(buffer, &bufferSize);
+	            uint32_t crcContent = crc32(buffer, bufferSize, 0xFFFFFFFF);
+	            ACMessage *lastMessage;
 
-	            batteryLevel = BoardGetBatteryLevel( );                             // 1 (very low) to 254 (fully charged)
-	            //GpsGetLatestGpsPositionBinary( &latitude, &longitude );
-	            //altitudeGps = GpsGetLatestGpsAltitude( );                           // in m
-
-	            AppData[0] = AppLedStateOn;
-	            AppData[1] = temperature;                                           // Signed degrees celsius in half degree units. So,  +/-63 C
-	            AppData[2] = batteryLevel;                                          // Per LoRaWAN spec; 0=Charging; 1...254 = level, 255 = N/A
-	            AppData[3] = ( latitude >> 16 ) & 0xFF;
-	            AppData[4] = ( latitude >> 8 ) & 0xFF;
-	            AppData[5] = latitude & 0xFF;
-	            AppData[6] = ( longitude >> 16 ) & 0xFF;
-	            AppData[7] = ( longitude >> 8 ) & 0xFF;
-	            AppData[8] = longitude & 0xFF;
-	            AppData[9] = ( altitudeGps >> 8 ) & 0xFF;
-	            AppData[10] = altitudeGps & 0xFF;
+	            AppData[0]  =  batteryLevel;
+	            AppData[1]  = (crcTemplate & 0x000000FF);
+	            AppData[2]  = (crcTemplate & 0x0000FF00) >> 8;
+	            AppData[3]  = (crcTemplate & 0x00FF0000) >> 16;
+	            AppData[4]  = (crcTemplate & 0xFF000000) >> 24;
+	            AppData[5]  = (crcContent  & 0x000000FF);
+	            AppData[6]  = (crcContent  & 0x0000FF00) >> 8;
+	            AppData[7]  = (crcContent  & 0x00FF0000) >> 16;
+	            AppData[8]  = (crcContent  & 0xFF000000) >> 24;
+	            AppData[9]  = (lastMessage->fields.id & 0x00FF);
+	            AppData[10] = (lastMessage->fields.id & 0xFF00) >> 8;
+	            AppData[11] = lastMessage->fields.maxPackets - lastMessage->fields.packetCounter;
 	#endif
 	        }
 	        break;
@@ -885,17 +902,5 @@ static void LoRaTxData(uint8_t port){
 }
 
 static void LoRaRxData(McpsIndication_t *mcpsIndication){
-	switch (mcpsIndication->Port) {
-	 case 1: // The application LED can be controlled on port 1 or 2
-     case 2:
-    	if( mcpsIndication->BufferSize == 1 )
-		{
-    		AppLedStateOn = mcpsIndication->Buffer[0] & 0x01;
-			GpioWrite( &Led3, ( ( AppLedStateOn & 0x01 ) != 0 ) ? 0 : 1 );
-		}
-
-    	break;
-    default:
-		break;
-	}
+	ACTranslatorHandleReciveMessage(mcpsIndication->Buffer, mcpsIndication->BufferSize);
 }
