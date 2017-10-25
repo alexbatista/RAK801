@@ -1209,8 +1209,8 @@ static void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t
                 {
                     LoRaMacParams.ReceiveDelay1 = 1;
                 }
-                LoRaMacParams.ReceiveDelay1 *= 1e3;
-                LoRaMacParams.ReceiveDelay2 = LoRaMacParams.ReceiveDelay1 + 1e3;
+                LoRaMacParams.ReceiveDelay1 *= 1000;
+                LoRaMacParams.ReceiveDelay2 = LoRaMacParams.ReceiveDelay1 + 1000;
 
 #if !( defined( USE_BAND_915 ) || defined( USE_BAND_915_HYBRID ) )
                 //CFList
@@ -3462,14 +3462,14 @@ LoRaMacStatus_t LoRaMacInitialization( LoRaMacPrimitives_t *primitives, LoRaMacC
     // 125 kHz channels
     for( uint8_t i = 0; i < LORA_MAX_NB_CHANNELS - 8; i++ )
     {
-        Channels[i].Frequency = 902.3e6 + i * 200e3;
+        Channels[i].Frequency = 902300000 + i * 200000;
         Channels[i].DrRange.Value = ( DR_3 << 4 ) | DR_0;
         Channels[i].Band = 0;
     }
     // 500 kHz channels
     for( uint8_t i = LORA_MAX_NB_CHANNELS - 8; i < LORA_MAX_NB_CHANNELS; i++ )
     {
-        Channels[i].Frequency = 903.0e6 + ( i - ( LORA_MAX_NB_CHANNELS - 8 ) ) * 1.6e6;
+        Channels[i].Frequency = 903000000 + ( i - ( LORA_MAX_NB_CHANNELS - 8 ) ) * 1600000;
         Channels[i].DrRange.Value = ( DR_4 << 4 ) | DR_4;
         Channels[i].Band = 0;
     }
@@ -4540,3 +4540,12 @@ static RxConfigParams_t ComputeRxWindowParameters( int8_t datarate, uint32_t rxE
 
     return rxConfigParams;
 }
+//
+//TRxLate  = DEFAULT_MIN_RX_SYMBOLS * tSymbol - RADIO_WAKEUP_TIME;
+//TRxEarly = 8 - DEFAULT_MIN_RX_SYMBOLS * tSymbol - RxWindowTimeout - RADIO_WAKEUP_TIME
+//TRxLate - TRxEarly = 2 * DEFAULT_SYSTEM_MAX_RX_ERROR
+//RxOffset = ( TRxLate + TRxEarly ) / 2
+//RxWindowTimeout = ( 2 * DEFAULT_MIN_RX_SYMBOLS - 8 ) * tSymbol + 2 * DEFAULT_SYSTEM_MAX_RX_ERROR
+//RxOffset = 4 * tSymbol - RxWindowTimeout / 2 - RADIO_WAKE_UP_TIME
+///*Minimal value of RxWindowTimeout must be 5 symbols which implies that the system always tolerates at least an error of 1.5 * tSymbol
+// */

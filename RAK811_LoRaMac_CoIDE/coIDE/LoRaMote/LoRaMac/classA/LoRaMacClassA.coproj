@@ -109,7 +109,7 @@
           <Define name="USE_HAL_DRIVER"/>
           <Define name="STM32L151xB"/>
           <Define name="USE_DEBUGGER"/>
-          <Define name="USE_BAND_915"/>
+          <Define name="USE_BAND_915_HYBRID"/>
         </DefinedSymbols>
       </Compile>
       <Link useDefault="0">
@@ -214,10 +214,10 @@
     <File name="boards/mcu" path="" type="2"/>
     <File name="boards/LoRaMote/STM32L1xx_HAL_Driver/stm32l1xx_hal_spi.c" path="../../../../src/boards/mcu/stm32/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_spi.c" type="1"/>
     <File name="boards/LoRaMote/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.c" path="../../../../src/boards/mcu/stm32/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_cortex.c" type="1"/>
-    <File name="system/gpio.c" path="../../../../src/system/gpio.c" type="1"/>
-    <File name="components" path="" type="2"/>
-    <File name="boards/LoRaMote/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc_ex.c" path="../../../../src/boards/mcu/stm32/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_adc_ex.c" type="1"/>
     <File name="system/adc.c" path="../../../../src/system/adc.c" type="1"/>
+    <File name="components" path="" type="2"/>
+    <File name="system/gpio.c" path="../../../../src/system/gpio.c" type="1"/>
+    <File name="boards/LoRaMote/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc_ex.c" path="../../../../src/boards/mcu/stm32/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_adc_ex.c" type="1"/>
     <File name="boards/LoRaMote/STM32L1xx_HAL_Driver/stm32l1xx_hal_rtc_ex.c" path="../../../../src/boards/mcu/stm32/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_rtc_ex.c" type="1"/>
     <File name="boards/LoRaMote/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.c" path="../../../../src/boards/mcu/stm32/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_adc.c" type="1"/>
     <File name="system/i2c.c" path="../../../../src/system/i2c.c" type="1"/>

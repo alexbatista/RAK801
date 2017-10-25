@@ -1621,6 +1621,17 @@ typedef struct sLoRaMacPrimitives
 
 typedef struct sLoRaMacCallback
 {
+	/*!
+	 * \brief	Tx Callback function
+	 *
+	 * \retval Pointer to callback function that handler the data to be sent*/
+	void (*LoraTxData)(uint8_t port);
+
+	/*!
+	 * \brief Rx Callback function
+	 *
+	 * \retval Pointer to callback function that handle the data received*/
+	void (*LoraRxData)(McpsIndication_t *McpsIndication);
     /*!
      * \brief   Measures the battery level
      *

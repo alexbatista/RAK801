@@ -178,6 +178,11 @@ static enum eDeviceState
     DEVICE_STATE_SLEEP
 }DeviceState;
 
+typedef enum eTxEvent
+{
+	TX_ON_TIMER,
+	TX_ON_EVENT
+} TxEvent;
 /*!
  * LoRaWAN compliance tests support data
  */
@@ -196,71 +201,26 @@ struct ComplianceTest_s
 }ComplianceTest;
 
 /*!
+ * Callback Functions
+ */
+static void LoRaTxData(uint8_t port);
+
+static void LoRaRxData(McpsIndication_t *McpsIndication);
+
+LoRaMacPrimitives_t LoRaMacPrimitives;
+LoRaMacCallback_t LoRaMacCallbacks = {LoRaTxData,
+									  LoRaRxData,
+									  BoardGetBatteryLevel};
+MibRequestConfirm_t mibReq;
+
+/*!
  * \brief   Prepares the payload of the frame
  */
 static void PrepareTxFrame( uint8_t port )
 {
     switch( port )
     {
-    case 2:
-        {
-#if defined( USE_BAND_868 )
-            uint16_t pressure = 0;
-            int16_t altitudeBar = 0;
-            int16_t temperature = 0;
-            int32_t latitude, longitude = 0;
-            int16_t altitudeGps = 0xFFFF;
-            uint8_t batteryLevel = 0;
 
-            //pressure = ( uint16_t )( MPL3115ReadPressure( ) / 10 );             // in hPa / 10
-            //temperature = ( int16_t )( MPL3115ReadTemperature( ) * 100 );       // in °C * 100
-            //altitudeBar = ( int16_t )( MPL3115ReadAltitude( ) * 10 );           // in m * 10
-            batteryLevel = BoardGetBatteryLevel( );                             // 1 (very low) to 254 (fully charged)
-           // GpsGetLatestGpsPositionBinary( &latitude, &longitude );
-           // altitudeGps = GpsGetLatestGpsAltitude( );                           // in m
-
-            AppData[0] = AppLedStateOn;
-            AppData[1] = ( pressure >> 8 ) & 0xFF;
-            AppData[2] = pressure & 0xFF;
-            AppData[3] = ( temperature >> 8 ) & 0xFF;
-            AppData[4] = temperature & 0xFF;
-            AppData[5] = ( altitudeBar >> 8 ) & 0xFF;
-            AppData[6] = altitudeBar & 0xFF;
-            AppData[7] = batteryLevel;
-            AppData[8] = ( latitude >> 16 ) & 0xFF;
-            AppData[9] = ( latitude >> 8 ) & 0xFF;
-            AppData[10] = latitude & 0xFF;
-            AppData[11] = ( longitude >> 16 ) & 0xFF;
-            AppData[12] = ( longitude >> 8 ) & 0xFF;
-            AppData[13] = longitude & 0xFF;
-            AppData[14] = ( altitudeGps >> 8 ) & 0xFF;
-            AppData[15] = altitudeGps & 0xFF;
-#elif defined( USE_BAND_915 ) || defined( USE_BAND_915_HYBRID )
-            int16_t temperature = 0;
-            int32_t latitude, longitude = 0;
-            uint16_t altitudeGps = 0xFFFF;
-            uint8_t batteryLevel = 0;
-
-            //temperature = ( int16_t )( MPL3115ReadTemperature( ) * 100 );       // in °C * 100
-
-            batteryLevel = BoardGetBatteryLevel( );                             // 1 (very low) to 254 (fully charged)
-            //GpsGetLatestGpsPositionBinary( &latitude, &longitude );
-            //altitudeGps = GpsGetLatestGpsAltitude( );                           // in m
-
-            AppData[0] = AppLedStateOn;
-            AppData[1] = temperature;                                           // Signed degrees celsius in half degree units. So,  +/-63 C
-            AppData[2] = batteryLevel;                                          // Per LoRaWAN spec; 0=Charging; 1...254 = level, 255 = N/A
-            AppData[3] = ( latitude >> 16 ) & 0xFF;
-            AppData[4] = ( latitude >> 8 ) & 0xFF;
-            AppData[5] = latitude & 0xFF;
-            AppData[6] = ( longitude >> 16 ) & 0xFF;
-            AppData[7] = ( longitude >> 8 ) & 0xFF;
-            AppData[8] = longitude & 0xFF;
-            AppData[9] = ( altitudeGps >> 8 ) & 0xFF;
-            AppData[10] = altitudeGps & 0xFF;
-#endif
-        }
-        break;
     case 224:
         if( ComplianceTest.LinkCheck == true )
         {
@@ -287,6 +247,7 @@ static void PrepareTxFrame( uint8_t port )
         }
         break;
     default:
+    	LoRaMacCallbacks.LoraTxData(port);
         break;
     }
 }
@@ -337,32 +298,37 @@ static bool SendFrame( void )
     return true;
 }
 
+
+static void OnSendEvent(void){
+	MibRequestConfirm_t mibReq;
+	LoRaMacStatus_t status;
+
+	mibReq.Type = MIB_NETWORK_JOINED;
+	status = LoRaMacMibGetRequestConfirm( &mibReq );
+
+	if( status == LORAMAC_STATUS_OK )
+	{
+		if( mibReq.Param.IsNetworkJoined == true )
+		{
+			DeviceState = DEVICE_STATE_SEND;
+			NextTx = true;
+		}
+		else
+		{
+			DeviceState = DEVICE_STATE_JOIN;
+		}
+	}
+}
 /*!
  * \brief Function executed on TxNextPacket Timeout event
  */
 static void OnTxNextPacketTimerEvent( void )
 {
-    MibRequestConfirm_t mibReq;
-    LoRaMacStatus_t status;
+   TimerStop( &TxNextPacketTimer );
+   OnSendEvent();
 
-    TimerStop( &TxNextPacketTimer );
-
-    mibReq.Type = MIB_NETWORK_JOINED;
-    status = LoRaMacMibGetRequestConfirm( &mibReq );
-
-    if( status == LORAMAC_STATUS_OK )
-    {
-        if( mibReq.Param.IsNetworkJoined == true )
-        {
-            DeviceState = DEVICE_STATE_SEND;
-            NextTx = true;
-        }
-        else
-        {
-            DeviceState = DEVICE_STATE_JOIN;
-        }
-    }
 }
+
 
 /*!
  * \brief Function executed on Led 1 Timeout event
@@ -479,15 +445,7 @@ static void McpsIndication( McpsIndication_t *mcpsIndication )
     {
         switch( mcpsIndication->Port )
         {
-        case 1: // The application LED can be controlled on port 1 or 2
-        case 2:
-            if( mcpsIndication->BufferSize == 1 )
-            {
-                AppLedStateOn = mcpsIndication->Buffer[0] & 0x01;
-                GpioWrite( &Led3, ( ( AppLedStateOn & 0x01 ) != 0 ) ? 0 : 1 );
-            }
-            break;
-        case 224:
+          case 224:
             if( ComplianceTest.Running == false )
             {
                 // Check compliance test enable command (i)
@@ -624,6 +582,7 @@ static void McpsIndication( McpsIndication_t *mcpsIndication )
             }
             break;
         default:
+        	LoRaMacCallbacks.LoraRxData(mcpsIndication);
             break;
         }
     }
@@ -647,11 +606,13 @@ static void MlmeConfirm( MlmeConfirm_t *mlmeConfirm )
         {
             if( mlmeConfirm->Status == LORAMAC_EVENT_INFO_STATUS_OK )
             {
+//            	printf("\nJOINED!!\n\n\r");
                 // Status is OK, node has joined the network
                 DeviceState = DEVICE_STATE_SEND;
             }
             else
             {
+            	printf("\nFAILED TO JOIN! TRYING AGAIN... %d\n\n\r",mlmeConfirm->Status);
                 // Join was not successful. Try to join again
                 DeviceState = DEVICE_STATE_JOIN;
             }
@@ -683,11 +644,9 @@ static void MlmeConfirm( MlmeConfirm_t *mlmeConfirm )
  */
 int main( void )
 {
-    LoRaMacPrimitives_t LoRaMacPrimitives;
-    LoRaMacCallback_t LoRaMacCallbacks;
-    MibRequestConfirm_t mibReq;
+	 TxEvent txEvent = TX_ON_TIMER;
 
-    BoardInitMcu( );
+	BoardInitMcu( );
     //BoardInitPeriph( );
 
     DeviceState = DEVICE_STATE_INIT;
@@ -701,7 +660,7 @@ int main( void )
                 LoRaMacPrimitives.MacMcpsConfirm = McpsConfirm;
                 LoRaMacPrimitives.MacMcpsIndication = McpsIndication;
                 LoRaMacPrimitives.MacMlmeConfirm = MlmeConfirm;
-                LoRaMacCallbacks.GetBatteryLevel = BoardGetBatteryLevel;
+//                LoRaMacCallbacks.GetBatteryLevel = BoardGetBatteryLevel;
                 LoRaMacInitialization( &LoRaMacPrimitives, &LoRaMacCallbacks );
 
                 TimerInit( &TxNextPacketTimer, OnTxNextPacketTimerEvent );
@@ -742,6 +701,10 @@ int main( void )
 #endif
 
 #endif
+                mibReq.Type = MIB_DEVICE_CLASS;
+                mibReq.Param.Class = CLASS_C;
+                LoRaMacMibSetRequestConfirm( &mibReq );
+
                 DeviceState = DEVICE_STATE_JOIN;
                 break;
             }
@@ -752,7 +715,7 @@ int main( void )
 
 
                 // Initialize LoRaMac device unique ID
-                //BoardGetUniqueId( DevEui );
+                BoardGetUniqueId( DevEui );
 
                 printf("OTAA\n\r");
                 printf("DevEui= %02X", DevEui[0]) ;for(int i=1; i<8 ; i++) {printf("-%02X", DevEui[i]); }; printf("\n\r");
@@ -831,10 +794,11 @@ int main( void )
             case DEVICE_STATE_CYCLE:
             {
                 DeviceState = DEVICE_STATE_SLEEP;
-
-                // Schedule next packet transmission
-                TimerSetValue( &TxNextPacketTimer, TxDutyCycleTime );
-                TimerStart( &TxNextPacketTimer );
+                if(txEvent == TX_ON_TIMER){
+					// Schedule next packet transmission
+					TimerSetValue( &TxNextPacketTimer, TxDutyCycleTime );
+					TimerStart( &TxNextPacketTimer );
+                }
                 break;
             }
             case DEVICE_STATE_SLEEP:
@@ -850,4 +814,88 @@ int main( void )
             }
         }
     }
+}
+
+
+static void LoRaTxData(uint8_t port){
+	switch (port) {
+	  case 2:
+	        {
+	#if defined( USE_BAND_868 )
+	            uint16_t pressure = 0;
+	            int16_t altitudeBar = 0;
+	            int16_t temperature = 0;
+	            int32_t latitude, longitude = 0;
+	            int16_t altitudeGps = 0xFFFF;
+	            uint8_t batteryLevel = 0;
+
+	            //pressure = ( uint16_t )( MPL3115ReadPressure( ) / 10 );             // in hPa / 10
+	            //temperature = ( int16_t )( MPL3115ReadTemperature( ) * 100 );       // in °C * 100
+	            //altitudeBar = ( int16_t )( MPL3115ReadAltitude( ) * 10 );           // in m * 10
+	            batteryLevel = BoardGetBatteryLevel( );                             // 1 (very low) to 254 (fully charged)
+	           // GpsGetLatestGpsPositionBinary( &latitude, &longitude );
+	           // altitudeGps = GpsGetLatestGpsAltitude( );                           // in m
+
+	            AppData[0] = AppLedStateOn;
+	            AppData[1] = ( pressure >> 8 ) & 0xFF;
+	            AppData[2] = pressure & 0xFF;
+	            AppData[3] = ( temperature >> 8 ) & 0xFF;
+	            AppData[4] = temperature & 0xFF;
+	            AppData[5] = ( altitudeBar >> 8 ) & 0xFF;
+	            AppData[6] = altitudeBar & 0xFF;
+	            AppData[7] = batteryLevel;
+	            AppData[8] = ( latitude >> 16 ) & 0xFF;
+	            AppData[9] = ( latitude >> 8 ) & 0xFF;
+	            AppData[10] = latitude & 0xFF;
+	            AppData[11] = ( longitude >> 16 ) & 0xFF;
+	            AppData[12] = ( longitude >> 8 ) & 0xFF;
+	            AppData[13] = longitude & 0xFF;
+	            AppData[14] = ( altitudeGps >> 8 ) & 0xFF;
+	            AppData[15] = altitudeGps & 0xFF;
+	#elif defined( USE_BAND_915 ) || defined( USE_BAND_915_HYBRID )
+	            int16_t temperature = 0;
+	            int32_t latitude, longitude = 0;
+	            uint16_t altitudeGps = 0xFFFF;
+	            uint8_t batteryLevel = 0;
+
+	            //temperature = ( int16_t )( MPL3115ReadTemperature( ) * 100 );       // in °C * 100
+
+	            batteryLevel = BoardGetBatteryLevel( );                             // 1 (very low) to 254 (fully charged)
+	            //GpsGetLatestGpsPositionBinary( &latitude, &longitude );
+	            //altitudeGps = GpsGetLatestGpsAltitude( );                           // in m
+
+	            AppData[0] = AppLedStateOn;
+	            AppData[1] = temperature;                                           // Signed degrees celsius in half degree units. So,  +/-63 C
+	            AppData[2] = batteryLevel;                                          // Per LoRaWAN spec; 0=Charging; 1...254 = level, 255 = N/A
+	            AppData[3] = ( latitude >> 16 ) & 0xFF;
+	            AppData[4] = ( latitude >> 8 ) & 0xFF;
+	            AppData[5] = latitude & 0xFF;
+	            AppData[6] = ( longitude >> 16 ) & 0xFF;
+	            AppData[7] = ( longitude >> 8 ) & 0xFF;
+	            AppData[8] = longitude & 0xFF;
+	            AppData[9] = ( altitudeGps >> 8 ) & 0xFF;
+	            AppData[10] = altitudeGps & 0xFF;
+	#endif
+	        }
+	        break;
+
+		default:
+			break;
+	}
+}
+
+static void LoRaRxData(McpsIndication_t *mcpsIndication){
+	switch (mcpsIndication->Port) {
+	 case 1: // The application LED can be controlled on port 1 or 2
+     case 2:
+    	if( mcpsIndication->BufferSize == 1 )
+		{
+    		AppLedStateOn = mcpsIndication->Buffer[0] & 0x01;
+			GpioWrite( &Led3, ( ( AppLedStateOn & 0x01 ) != 0 ) ? 0 : 1 );
+		}
+
+    	break;
+    default:
+		break;
+	}
 }

@@ -1,133 +1,133 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <history>
-   <processor signature="arm-none-eabi-gcc noversion nomachine -mcpu=cortex-m3 -mthumb -g2 -Wall -Os -std=c99 -c -DUSE_HAL_DRIVER -DSTM32L151xB -DUSE_DEBUGGER -DUSE_BAND_915 -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\radio -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\boards\LoRaMote -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\peripherals -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\boards\mcu\stm32 -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\system -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\boards\LoRaMote\cmsis -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\boards\mcu\stm32\cmsis -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Inc -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\system\crypto -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\mac">
-      <target file="uart.o" lastModified="15f4a58054a">
+   <processor signature="arm-none-eabi-gcc noversion nomachine -mcpu=cortex-m3 -mthumb -g2 -Wall -Os -std=c99 -c -DUSE_HAL_DRIVER -DSTM32L151xB -DUSE_DEBUGGER -DUSE_BAND_915_HYBRID -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\radio -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\boards\LoRaMote -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\peripherals -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\boards\mcu\stm32 -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\system -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\boards\LoRaMote\cmsis -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\boards\mcu\stm32\cmsis -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Inc -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\system\crypto -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src -I..\..\..\..\..\..\..\workspace\WisNode-LoRa\RAK811_LoRaMac_CoIDE\src\mac">
+      <target file="uart.o" lastModified="15f54e3eaee">
          <source file="..\..\..\..\..\..\..\src\system\uart.c" lastModified="15f49c5d6e4"/>
       </target>
-      <target file="stm32l1xx_hal_cortex.o" lastModified="15f4a581383">
-         <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_cortex.c" lastModified="15f49c5cdb2"/>
-      </target>
-      <target file="gpio-board.o" lastModified="15f4a580bb2">
+      <target file="gpio-board.o" lastModified="15f54e3ef02">
          <source file="..\..\..\..\..\..\..\src\boards\LoRaMote\gpio-board.c" lastModified="15f49c5c11f"/>
       </target>
-      <target file="uart-board.o" lastModified="15f4a581577">
+      <target file="stm32l1xx_hal_cortex.o" lastModified="15f4ee79333">
+         <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_cortex.c" lastModified="15f49c5cdb2"/>
+      </target>
+      <target file="uart-board.o" lastModified="15f54e3f645">
          <source file="..\..\..\..\..\..\..\src\boards\LoRaMote\uart-board.c" lastModified="15f49c5c195"/>
       </target>
-      <target file="board.o" lastModified="15f4a580998">
+      <target file="board.o" lastModified="15f54e3ed25">
          <source file="..\..\..\..\..\..\..\src\boards\LoRaMote\board.c" lastModified="15f49c5c056"/>
       </target>
-      <target file="sx1276.o" lastModified="15f4a57fd78">
+      <target file="sx1276.o" lastModified="15f54e3e810">
          <source file="..\..\..\..\..\..\..\src\radio\sx1276\sx1276.c" lastModified="15f49c5d533"/>
       </target>
-      <target file="LoRaMacCrypto.o" lastModified="15f4a5819d3">
-         <source file="..\..\..\..\..\..\..\src\mac\LoRaMacCrypto.c" lastModified="15f49c5d38d"/>
-      </target>
-      <target file="stm32l1xx_hal_flash.o" lastModified="15f4a580699">
+      <target file="stm32l1xx_hal_flash.o" lastModified="15f4ee7840b">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_flash.c" lastModified="15f49c5ce25"/>
       </target>
-      <target file="i2c.o" lastModified="15f4a57ff23">
+      <target file="LoRaMacCrypto.o" lastModified="15f4ee798d5">
+         <source file="..\..\..\..\..\..\..\src\mac\LoRaMacCrypto.c" lastModified="15f49c5d38d"/>
+      </target>
+      <target file="i2c.o" lastModified="15f54e3e968">
          <source file="..\..\..\..\..\..\..\src\system\i2c.c" lastModified="15f49c5d6bc"/>
       </target>
-      <target file="stm32l1xx_hal_rcc_ex.o" lastModified="15f4a580b18">
+      <target file="stm32l1xx_hal_rcc_ex.o" lastModified="15f4ee78942">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_rcc_ex.c" lastModified="15f49c5cf00"/>
       </target>
-      <target file="sx1276-board.o" lastModified="15f4a5814b3">
+      <target file="sx1276-board.o" lastModified="15f54e3f5c0">
          <source file="..\..\..\..\..\..\..\src\boards\LoRaMote\sx1276-board.c" lastModified="15f49c5c126"/>
       </target>
-      <target file="stm32l1xx_hal_rtc_ex.o" lastModified="15f4a580a9f">
+      <target file="stm32l1xx_hal_rtc_ex.o" lastModified="15f4ee788d1">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_rtc_ex.c" lastModified="15f49c5cf03"/>
       </target>
-      <target file="stm32l1xx_hal.o" lastModified="15f4a580d58">
+      <target file="stm32l1xx_hal.o" lastModified="15f4ee78beb">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal.c" lastModified="15f49c5cd8a"/>
       </target>
-      <target file="stm32l1xx_hal_gpio.o" lastModified="15f4a5805d6">
+      <target file="stm32l1xx_hal_gpio.o" lastModified="15f4ee78365">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_gpio.c" lastModified="15f49c5ce29"/>
       </target>
-      <target file="stm32l1xx_hal_spi_ex.o" lastModified="15f4a5803b4">
+      <target file="stm32l1xx_hal_spi_ex.o" lastModified="15f4ee78070">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_spi_ex.c" lastModified="15f49c5cfb5"/>
       </target>
-      <target file="aes.o" lastModified="15f4a58105d">
+      <target file="aes.o" lastModified="15f4ee78f2d">
          <source file="..\..\..\..\..\..\..\src\system\crypto\aes.c" lastModified="15f49c5d533"/>
       </target>
-      <target file="cmac.o" lastModified="15f4a580fd1">
-         <source file="..\..\..\..\..\..\..\src\system\crypto\cmac.c" lastModified="15f49c5d53b"/>
+      <target file="LoRaMac.o" lastModified="15f54e3f534">
+         <source file="..\..\..\..\..\..\..\src\mac\LoRaMac.c" lastModified="15f54309ca1"/>
       </target>
-      <target file="delay.o" lastModified="15f4a57fdef">
+      <target file="delay.o" lastModified="15f54e3e879">
          <source file="..\..\..\..\..\..\..\src\system\delay.c" lastModified="15f49c5d53b"/>
       </target>
-      <target file="LoRaMac.o" lastModified="15f4a5812f5">
-         <source file="..\..\..\..\..\..\..\src\mac\LoRaMac.c" lastModified="15f49c5d38a"/>
+      <target file="cmac.o" lastModified="15f4ee78ea9">
+         <source file="..\..\..\..\..\..\..\src\system\crypto\cmac.c" lastModified="15f49c5d53b"/>
       </target>
-      <target file="stm32l1xx_hal_rtc.o" lastModified="15f4a5804cf">
+      <target file="stm32l1xx_hal_rtc.o" lastModified="15f4ee78224">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_rtc.c" lastModified="15f49c5cf01"/>
       </target>
-      <target file="stm32l1xx_hal_rcc.o" lastModified="15f4a58164c">
-         <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_rcc.c" lastModified="15f49c5ceff"/>
-      </target>
-      <target file="gpio.o" lastModified="15f4a580dcb">
+      <target file="gpio.o" lastModified="15f54e3f128">
          <source file="..\..\..\..\..\..\..\src\system\gpio.c" lastModified="15f49c5d6b9"/>
       </target>
-      <target file="stm32l1xx_hal_pwr.o" lastModified="15f4a580e80">
+      <target file="stm32l1xx_hal_rcc.o" lastModified="15f4ee79544">
+         <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_rcc.c" lastModified="15f49c5ceff"/>
+      </target>
+      <target file="stm32l1xx_hal_pwr.o" lastModified="15f4ee78d52">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_pwr.c" lastModified="15f49c5cefc"/>
       </target>
-      <target file="rtc-board.o" lastModified="15f4a580f6b">
+      <target file="rtc-board.o" lastModified="15f54e3f217">
          <source file="..\..\..\..\..\..\..\src\boards\LoRaMote\rtc-board.c" lastModified="15f49c5c11f"/>
       </target>
-      <target file="stm32l1xx_hal_adc.o" lastModified="15f4a581973">
+      <target file="stm32l1xx_hal_adc.o" lastModified="15f4ee7986c">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_adc.c" lastModified="15f49c5cd8a"/>
       </target>
-      <target file="utilities.o" lastModified="15f4a580430">
+      <target file="utilities.o" lastModified="15f54e3ea68">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\utilities.c" lastModified="15f49c5d385"/>
       </target>
-      <target file="timer.o" lastModified="15f4a580355">
+      <target file="timer.o" lastModified="15f54e3e9f9">
          <source file="..\..\..\..\..\..\..\src\system\timer.c" lastModified="15f49c5d6e2"/>
       </target>
-      <target file="stm32l1xx_hal_dma.o" lastModified="15f4a581a7d">
+      <target file="stm32l1xx_hal_dma.o" lastModified="15f4ee7997f">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_dma.c" lastModified="15f49c5ce24"/>
       </target>
-      <target file="fifo.o" lastModified="15f4a5814f7">
+      <target file="fifo.o" lastModified="15f4ee793ff">
          <source file="..\..\..\..\..\..\..\src\system\fifo.c" lastModified="15f49c5d6b7"/>
       </target>
-      <target file="spi-board.o" lastModified="15f4a58182e">
+      <target file="spi-board.o" lastModified="15f54e3f74e">
          <source file="..\..\..\..\..\..\..\src\boards\LoRaMote\spi-board.c" lastModified="15f49c5c126"/>
       </target>
-      <target file="printf.o" lastModified="15f4a580cd8">
+      <target file="printf.o" lastModified="15f54e3f051">
          <source file="..\..\..\components\coocox-master\Retarget_printf\source\printf.c" lastModified="15f49c5bfb0"/>
       </target>
-      <target file="startup_stm32l151xb.o" lastModified="15f4a5819e5">
+      <target file="startup_stm32l151xb.o" lastModified="15f4ee798e3">
          <source file="..\..\..\..\..\..\..\src\boards\LoRaMote\cmsis\arm-gcc\startup_stm32l151xb.s" lastModified="15f49c5c060"/>
       </target>
-      <target file="stm32l1xx_hal_pwr_ex.o" lastModified="15f4a58189b">
+      <target file="stm32l1xx_hal_pwr_ex.o" lastModified="15f4ee7978b">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_pwr_ex.c" lastModified="15f49c5cefd"/>
       </target>
-      <target file="stm32l1xx_hal_uart.o" lastModified="15f4a5817a9">
+      <target file="stm32l1xx_hal_uart.o" lastModified="15f4ee7969e">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_uart.c" lastModified="15f49c5d069"/>
       </target>
-      <target file="system_stm32l1xx.o" lastModified="15f4a5806ff">
+      <target file="system_stm32l1xx.o" lastModified="15f4ee7847e">
          <source file="..\..\..\..\..\..\..\src\boards\LoRaMote\cmsis\system_stm32l1xx.c" lastModified="15f49c5c117"/>
       </target>
-      <target file="adc-board.o" lastModified="15f4a57fbe4">
+      <target file="adc-board.o" lastModified="15f54e3e6bc">
          <source file="..\..\..\..\..\..\..\src\boards\LoRaMote\adc-board.c" lastModified="15f49c5c055"/>
       </target>
-      <target file="adc.o" lastModified="15f4a5816b6">
+      <target file="adc.o" lastModified="15f54e3f6b0">
          <source file="..\..\..\..\..\..\..\src\system\adc.c" lastModified="15f49c5d533"/>
       </target>
-      <target file="stm32l1xx_hal_adc_ex.o" lastModified="15f4a57fadc">
-         <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_adc_ex.c" lastModified="15f49c5cd8a"/>
-      </target>
-      <target file="sysIrqHandlers.o" lastModified="15f4a57fe7a">
+      <target file="sysIrqHandlers.o" lastModified="15f54e3e8e0">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\sysIrqHandlers.c" lastModified="15f49c5d384"/>
       </target>
-      <target file="main.o" lastModified="15f4a5807f2">
-         <source file="..\..\..\..\..\..\..\src\apps\LoRaMac\classA\LoRaMote\main.c" lastModified="15f49c5c04e"/>
+      <target file="stm32l1xx_hal_adc_ex.o" lastModified="15f4ee77747">
+         <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_adc_ex.c" lastModified="15f49c5cd8a"/>
       </target>
-      <target file="stm32l1xx_hal_i2c.o" lastModified="15f4a5802c1">
+      <target file="main.o" lastModified="15f54e3ebed">
+         <source file="..\..\..\..\..\..\..\src\apps\LoRaMac\classA\LoRaMote\main.c" lastModified="15f50da8408"/>
+      </target>
+      <target file="stm32l1xx_hal_i2c.o" lastModified="15f4ee77f4d">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_i2c.c" lastModified="15f49c5ce2b"/>
       </target>
-      <target file="stm32l1xx_hal_spi.o" lastModified="15f4a58005d">
+      <target file="stm32l1xx_hal_spi.o" lastModified="15f4ee77cd1">
          <source file="..\..\..\..\..\..\..\src\boards\mcu\stm32\STM32L1xx_HAL_Driver\Src\stm32l1xx_hal_spi.c" lastModified="15f49c5cfb5"/>
       </target>
-      <target file="i2c-board.o" lastModified="15f4a58088f">
+      <target file="i2c-board.o" lastModified="15f54e3ec91">
          <source file="..\..\..\..\..\..\..\src\boards\LoRaMote\i2c-board.c" lastModified="15f49c5c11f"/>
       </target>
    </processor>
