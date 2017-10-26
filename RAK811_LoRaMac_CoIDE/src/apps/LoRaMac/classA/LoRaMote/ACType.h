@@ -9,22 +9,24 @@
 #define AC_ENABLE 1
 #define AC_DISABLE 0
 
-typedef enum {
+#define PACKED __attribute__((packed))
+
+typedef enum PACKED {
     kFail = 0,
     kOk
 } ACOutputStatus;
 
-typedef enum {
+typedef enum PACKED {
     kLow = 0,
     kHigh
 } ACPinLevel;
 
-typedef enum {
+typedef enum PACKED {
     kFalse = 0,
     kTrue
 } ACBool;
 
-typedef struct __attribute__((packed)) {
+typedef struct PACKED {
     uint16_t x;
     uint8_t y;
 } ACVector2;

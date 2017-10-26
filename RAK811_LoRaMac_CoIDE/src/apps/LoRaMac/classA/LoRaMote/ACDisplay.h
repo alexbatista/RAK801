@@ -1,7 +1,6 @@
 #ifndef ACDISPLAY_H
 #define ACDISPLAY_H
 
-#include <string.h>
 #include "ACType.h"
 #include "ACDriver.h"
 #include "ACIOMap.h"

@@ -21,11 +21,13 @@ Maintainer: Miguel Luis and Gregory Cristian
 
 #include "LoRaMac.h"
 #include "Commissioning.h"
+//*
 #include "crc32.h"
 #include "ACType.h"
 #include "ACLog.h"
 #include "ACTemplate.h"
 #include "ACTranslator.h"
+//*/
 
 /*!
  * Defines the application data transmission duty cycle. 5s, value in [ms].
@@ -660,6 +662,7 @@ int main( void )
 
     DeviceState = DEVICE_STATE_INIT;
 
+    //*
     ACTemplateInit();
 
     ACTranslatorCallback translatorCallbacks[kAmountOfMessageTypes];
@@ -667,6 +670,7 @@ int main( void )
 
     ACLogInit(printFunction);
     ACTranslatorInit(translatorCallbacks);
+    //*/
 
     while( 1 )
     {
@@ -870,6 +874,7 @@ static void LoRaTxData(uint8_t port){
 	            AppData[14] = ( altitudeGps >> 8 ) & 0xFF;
 	            AppData[15] = altitudeGps & 0xFF;
 	#elif defined( USE_BAND_915 ) || defined( USE_BAND_915_HYBRID )
+	            //*
 	            uint8_t buffer[MAX_CONTENT_SIZE];
 	            uint8_t bufferSize;
 
@@ -892,6 +897,7 @@ static void LoRaTxData(uint8_t port){
 	            AppData[9]  = (lastMessage->fields.id & 0x00FF);
 	            AppData[10] = (lastMessage->fields.id & 0xFF00) >> 8;
 	            AppData[11] = lastMessage->fields.maxPackets - lastMessage->fields.packetCounter;
+	            //*/
 	#endif
 	        }
 	        break;

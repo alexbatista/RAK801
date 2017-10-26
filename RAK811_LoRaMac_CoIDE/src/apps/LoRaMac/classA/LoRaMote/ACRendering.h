@@ -7,14 +7,12 @@
 #include "FreeSerif12pt7b.h"
 #include "FreeMono12pt7b.h"
 
-#include <stdio.h>
-#include <string.h>
 #include "gfxfont.h"
 #include "ACDisplay.h"
+//Tenis Nike Air Max Motion Masc.
+#define MAX_TEXT_LENGTH   35
 
-#define MAX_TEXT_LENGTH   56
-
-typedef enum {
+typedef enum PACKED {
 	kCircle = 1,
 	kRectangle,
 	kStaticText,
@@ -30,30 +28,30 @@ typedef enum {
 										 (element) == kBarcode 	   ||\
 										 (element) == kQRCode)
 
-typedef union {
-	uint8_t total[8+MAX_TEXT_LENGTH];
+typedef union PACKED {
+	uint8_t total[7+MAX_TEXT_LENGTH];
 	uint8_t type;
-	struct {
+	struct PACKED {
 		uint8_t  type;
 		ACVector2 center;
 		uint8_t  radius;
 		uint8_t color;
 	} circle;
-	struct {
+	struct PACKED {
 		uint8_t  type;
 		ACVector2 position;
 		uint16_t width;
 		uint16_t height;
 		uint8_t  color;
 	} rectangle;
-	struct {
+	struct PACKED {
 		uint8_t  type;
 		ACVector2 position;
 		uint8_t  fontSize;
 		uint8_t  color;
 		char text[MAX_TEXT_LENGTH];
 	} staticText;
-	struct {
+	struct PACKED {
 		uint8_t  type;
 		ACVector2 position;
 		uint8_t  fontSize;
@@ -61,12 +59,12 @@ typedef union {
 		uint8_t  placeholder;
 		char text[MAX_TEXT_LENGTH];
 	} dynamicText;
-	struct {
+	struct PACKED {
 		uint8_t type;
 		ACVector2 position;
 		uint8_t code[13];
 	} barcode;
-	struct {
+	struct PACKED {
 		uint8_t type;
 		ACVector2 position;
 		//uint32_t code;

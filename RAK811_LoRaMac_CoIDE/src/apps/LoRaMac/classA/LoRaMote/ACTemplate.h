@@ -6,9 +6,8 @@
 #include "ACRendering.h"
 #include "ACLog.h"
 
-#define MAX_OBJECTS 	  4
-#define MAX_NUM_TEMPLATES 1
-#define MAX_PLACEHOLDERS  3
+#define MAX_OBJECTS 	  7
+#define MAX_NUM_TEMPLATES 4
 
 void ACTemplateInit();
 ACOutputStatus ACTemplateUpdateContent(ACMessage *message);

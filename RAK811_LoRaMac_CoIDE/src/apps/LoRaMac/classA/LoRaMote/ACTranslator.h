@@ -10,7 +10,7 @@
 #define SIZE_MESSAGE_CACHE 3
 
 #define MAX_PACKET_SIZE 	   100
-#define MAX_NUMBERS_OF_PACKETS 5
+#define MAX_NUMBERS_OF_PACKETS 3
 #define MAX_CONTENT_SIZE 	   MAX_NUMBERS_OF_PACKETS * MAX_PACKET_SIZE
 
 #define ACMessageTypeExist(type) ((type) == kUploadTemplate ||\
@@ -19,7 +19,7 @@
 																	(type) == kChangeTemplate ||\
 																	(type) == kFirmware)
 
-typedef enum {
+typedef enum PACKED {
 	kUploadTemplate = 0,
 	kContent,
 	kConfig,
@@ -28,9 +28,9 @@ typedef enum {
 	kAmountOfMessageTypes
 } ACMessageType;
 
-typedef union {
+typedef union PACKED {
 	uint8_t total[6+MAX_CONTENT_SIZE];
-	struct {
+	struct PACKED {
 		int id:16;
 		int packetCounter:4;
 		int maxPackets:4;
